@@ -10,19 +10,18 @@ class BlocProvider extends StatelessWidget {
   final PersistenceProvider persistenceProvider;
 
   const BlocProvider({
-    Key key,
-    @required this.child,
-    @required this.persistenceProvider,
-  })  : assert(persistenceProvider != null),
-        super(key: key);
+    Key? key,
+    required this.child,
+    required this.persistenceProvider,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Provider<Bloc>(
-        child: child,
         create: (BuildContext context) => Bloc._(
           persistenceProvider: persistenceProvider,
         ),
         dispose: (BuildContext context, Bloc bloc) => bloc._dispose(),
+        child: child,
       );
 }
 
@@ -42,7 +41,7 @@ class Bloc {
   final PersistenceProvider persistenceProvider;
 
   Bloc._({
-    @required this.persistenceProvider,
+    required this.persistenceProvider,
   });
 
   /// This [StreamController] allows to send events of type [EventType].
@@ -55,33 +54,33 @@ class Bloc {
   Sink<EventType> get _eventsIn => _eventsController.sink;
 
   /// The steps consist of the feature ids of the features to be discovered.
-  List<String> _steps;
+  List<String>? _steps;
 
   /// Steps that have been previously completed.
-  Set<String> _stepsToIgnore;
+  Set<String>? _stepsToIgnore;
 
-  int _activeStepIndex;
+  int? _activeStepIndex;
 
-  String get activeFeatureId => _steps == null ||
+  String? get activeFeatureId => _steps == null ||
           _activeStepIndex == null ||
-          _activeStepIndex >= _steps.length ||
-          _activeStepIndex < 0
+          _activeStepIndex! >= _steps!.length ||
+          _activeStepIndex! < 0
       ? null
-      : _steps[_activeStepIndex];
+      : _steps![_activeStepIndex!];
 
   /// This is used to determine if the active feature is already shown by
   /// another [DescribedFeatureOverlay] as [DescribedFeatureOverlay.allowShowingDuplicate]
   /// requires this.
-  int _activeOverlays;
+  int? _activeOverlays;
 
-  int get activeOverlays => _activeOverlays;
+  int get activeOverlays => _activeOverlays!;
 
   /// [DescribedFeatureOverlay]s use either `activeOverlays++` to add themselves
   /// to the active overlays or `activeOverlays--` to remove themselves.
   set activeOverlays(int activeOverlays) {
     // Callers (DescribedFeatureOverlay's) can only either add or remove
     // themselves, i.e. the difference will always be 1.
-    assert((_activeOverlays - activeOverlays).abs() == 1);
+    assert((_activeOverlays! - activeOverlays).abs() == 1);
 
     _activeOverlays = activeOverlays;
 
@@ -102,12 +101,12 @@ class Bloc {
   }
 
   void discoverFeatures(Iterable<String> steps) async {
-    assert(steps != null && steps.isNotEmpty,
+    assert(steps.isNotEmpty,
         'You need to pass at least one step to [FeatureDiscovery.discoverFeatures].');
 
-    _steps = steps;
+    _steps = (steps as List<String>);
     _stepsToIgnore = await _alreadyCompletedSteps;
-    _steps = _steps.where((s) => !_stepsToIgnore.contains(s)).toList();
+    _steps = _steps!.where((s) => !_stepsToIgnore!.contains(s)).toList();
     _activeStepIndex = -1;
 
     await _nextStep();
@@ -121,11 +120,11 @@ class Bloc {
   }
 
   Future<void> _nextStep() async {
-    if (activeFeatureId != null) unawaited(_saveCompletionOf(activeFeatureId));
-    _activeStepIndex++;
+    if (activeFeatureId != null) unawaited(_saveCompletionOf(activeFeatureId!));
+    _activeStepIndex = _activeStepIndex! + 1;
     _activeOverlays = 0;
 
-    if (_activeStepIndex < _steps.length) {
+    if (_activeStepIndex! < _steps!.length) {
       _eventsIn.add(EventType.open);
     } else {
       // The last step has been completed, so we need to clear the steps.
@@ -149,14 +148,14 @@ class Bloc {
   }
 
   Future<Set<String>> get _alreadyCompletedSteps =>
-      persistenceProvider.completedSteps(_steps);
+      persistenceProvider.completedSteps(_steps!);
 
   /// Returns true iff this step has been previously
   /// recorded as completed in the Shared Preferences
   /// with [saveCompletionOf].
   Future<bool> hasPreviouslyCompleted(String featureId) async {
     _stepsToIgnore ??= await _alreadyCompletedSteps;
-    return _stepsToIgnore.contains(featureId);
+    return _stepsToIgnore!.contains(featureId);
   }
 
   Future<void> clearPreferences(Iterable<String> steps) async =>

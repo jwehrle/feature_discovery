@@ -31,16 +31,16 @@ class SharedPreferencesProvider implements PersistenceProvider {
   /// If [sharedPrefsPrefix] is provided, it will be prepended to all step identifiers passed
   /// to the different methods. If [sharedPrefsPrefix] is not provided, the step
   /// identifiers will be used as-is.
-  const SharedPreferencesProvider([String sharedPrefsPrefix])
+  const SharedPreferencesProvider([String? sharedPrefsPrefix])
       : sharedPrefsPrefix = sharedPrefsPrefix ?? '';
 
   /// Use this string a prefix for all steps identifiers.
-  final String sharedPrefsPrefix;
+  final String? sharedPrefsPrefix;
 
   @override
   Future<bool> hasCompletedStep(String featureId) async {
     final prefs = await SharedPreferences.getInstance();
-    final hasCompleted = await prefs.getBool(_normalizeFeatureId(featureId));
+    final hasCompleted = prefs.getBool(_normalizeFeatureId(featureId));
     return hasCompleted == true;
   }
 
@@ -86,9 +86,7 @@ class SharedPreferencesProvider implements PersistenceProvider {
 /// This is a great implementation for testing.
 class MemoryPersistenceProvider implements PersistenceProvider {
   /// Instantiates a new [MemoryPersistenceProvider] with an initial completed set of steps.
-  const MemoryPersistenceProvider(Set<String> steps)
-      : assert(steps != null),
-        _steps = steps;
+  const MemoryPersistenceProvider(Set<String> steps) : _steps = steps;
 
   /// Instantiates an empty [MemoryPersistenceProvider] instance.
   factory MemoryPersistenceProvider.empty() =>

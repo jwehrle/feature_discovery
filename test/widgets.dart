@@ -9,8 +9,8 @@ class TestWrapper extends StatelessWidget {
   final Widget child;
 
   const TestWrapper({
-    Key key,
-    this.child,
+    Key? key,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -34,8 +34,8 @@ class TestWidget extends StatelessWidget {
   final bool allowShowingDuplicate;
 
   const TestWidget({
-    Key key,
-    @required this.featureIds,
+    Key? key,
+    required this.featureIds,
     this.allowShowingDuplicate = false,
   }) : super(key: key);
 
@@ -60,9 +60,9 @@ class TestIcon extends StatefulWidget {
   final bool allowShowingDuplicate;
 
   const TestIcon({
-    Key key,
-    @required this.featureId,
-    @required this.allowShowingDuplicate,
+    Key? key,
+    required this.featureId,
+    required this.allowShowingDuplicate,
   }) : super(key: key);
 
   @override
@@ -81,10 +81,10 @@ class TestIconState extends State<TestIcon> {
       // Otherwise, the tester can never settle as it requires frame sync.
       enablePulsingAnimation: false,
       allowShowingDuplicate: widget.allowShowingDuplicate,
-      child: icon,
       tapTarget: icon,
       title: const Text('This is it'),
       description: Text('Test has passed for ${widget.featureId}'),
+      child: icon,
     );
   }
 }
@@ -105,12 +105,12 @@ class OverflowingDescriptionFeature extends StatelessWidget {
   final OverflowMode mode;
 
   const OverflowingDescriptionFeature({
-    Key key,
-    this.onContext,
-    this.featureId,
-    this.icon,
-    this.mode,
-    this.onDismiss,
+    Key? key,
+    required this.onContext,
+    required this.featureId,
+    required this.icon,
+    required this.mode,
+    required this.onDismiss,
   }) : super(key: key);
 
   @override
@@ -135,13 +135,13 @@ class OverflowingDescriptionFeature extends StatelessWidget {
                     enablePulsingAnimation: false,
                     overflowMode: mode,
                     onDismiss: () async {
-                      onDismiss?.call();
+                      onDismiss.call();
                       return true;
                     },
                     child: Container(
                       width: 1e2,
                       height: 1e2,
-                      color: const Color(0xfffffff),
+                      color: const Color(0xffffffff),
                     ),
                   ),
                 ),
@@ -170,11 +170,11 @@ class WidgetWithDisposableFeature extends StatefulWidget {
   final String staticFeatureTitle, disposableFeatureTitle;
 
   const WidgetWithDisposableFeature({
-    Key key,
-    @required this.featureId,
-    @required this.featureIcon,
-    @required this.staticFeatureTitle,
-    @required this.disposableFeatureTitle,
+    Key? key,
+    required this.featureId,
+    required this.featureIcon,
+    required this.staticFeatureTitle,
+    required this.disposableFeatureTitle,
   }) : super(key: key);
 
   @override
@@ -184,7 +184,7 @@ class WidgetWithDisposableFeature extends StatefulWidget {
 @visibleForTesting
 class WidgetWithDisposableFeatureState
     extends State<WidgetWithDisposableFeature> {
-  bool _showDisposableFeature;
+  bool? _showDisposableFeature;
 
   @override
   void initState() {
@@ -202,7 +202,7 @@ class WidgetWithDisposableFeatureState
   Widget build(_) => TestWrapper(
         child: Column(
           children: <Widget>[
-            if (_showDisposableFeature)
+            if (_showDisposableFeature!)
               DescribedFeatureOverlay(
                 featureId: widget.featureId,
                 allowShowingDuplicate: false,

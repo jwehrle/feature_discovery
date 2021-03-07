@@ -192,7 +192,7 @@ void main() {
 
     for (final modeEntry in modes.entries) {
       testWidgets(modeEntry.key.toString(), (WidgetTester tester) async {
-        BuildContext context;
+        BuildContext? context;
 
         var triggered = false;
 
@@ -223,7 +223,7 @@ void main() {
           ),
         );
 
-        FeatureDiscovery.discoverFeatures(context, <String>[featureId]);
+        FeatureDiscovery.discoverFeatures(context!, <String>[featureId]);
         await tester.pumpAndSettle();
 
         await tester.tap(find.byIcon(icon));

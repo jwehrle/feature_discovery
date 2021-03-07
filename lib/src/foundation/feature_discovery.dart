@@ -68,7 +68,7 @@ class FeatureDiscovery extends StatelessWidget {
   /// in the tree to display the overlay.
   /// This means that you cannot use this to check if a feature overlay is being displayed.
   static String currentFeatureIdOf(BuildContext context) =>
-      _blocOf(context).activeFeatureId;
+      _blocOf(context).activeFeatureId!;
 
   final Widget child;
 
@@ -82,12 +82,10 @@ class FeatureDiscovery extends StatelessWidget {
   /// Instantiates a new [FeatureDiscovery] and stores completion of steps
   /// through the provided [persistenceProvider][PersistenceProvider].
   const FeatureDiscovery.withProvider({
-    @required this.child,
-    @required this.persistenceProvider,
-    Key key,
-  })  : assert(child != null),
-        assert(persistenceProvider != null),
-        super(key: key);
+    Key? key,
+    required this.child,
+    required this.persistenceProvider,
+  }) : super(key: key);
 
   /// Instantiates a new [FeatureDiscovery].
   ///
@@ -105,10 +103,10 @@ class FeatureDiscovery extends StatelessWidget {
   /// [sharedPreferencesPrefix] is used only if [recordStepsInSharedPreferences]
   /// is true.
   factory FeatureDiscovery({
-    @required Widget child,
+    Key? key,
+    required Widget child,
     bool recordStepsInSharedPreferences = true,
-    String sharedPreferencesPrefix,
-    Key key,
+    String? sharedPreferencesPrefix,
   }) =>
       FeatureDiscovery.withProvider(
         key: key,
@@ -120,7 +118,7 @@ class FeatureDiscovery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        child: child,
         persistenceProvider: persistenceProvider,
+        child: child,
       );
 }

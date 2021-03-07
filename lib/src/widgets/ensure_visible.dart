@@ -5,15 +5,13 @@ class EnsureVisible extends StatefulWidget {
   /// The child widget that we are wrapping
   final Widget child;
 
-  const EnsureVisible({Key key, @required this.child})
-      : assert(child != null),
-        super(key: key);
+  const EnsureVisible({Key? key, required this.child}) : super(key: key);
 
   @override
   EnsureVisibleState createState() => EnsureVisibleState();
 
   static void ensureVisible(BuildContext context) {
-    context.findAncestorStateOfType<EnsureVisibleState>().ensureVisible();
+    context.findAncestorStateOfType<EnsureVisibleState>()!.ensureVisible();
   }
 }
 
@@ -35,10 +33,8 @@ class EnsureVisibleState extends State<EnsureVisible> {
   Future<void> ensureVisible({
     Duration duration = const Duration(milliseconds: 100),
     Curve curve = Curves.ease,
-    double preciseAlignment,
+    double? preciseAlignment,
   }) async {
-    assert(duration != null, 'You need to specify a non-null duration.');
-    assert(curve != null, 'You need to specify a curve.');
     assert(
         preciseAlignment == null ||
             (preciseAlignment > 0 && preciseAlignment < 1),
@@ -51,17 +47,17 @@ class EnsureVisibleState extends State<EnsureVisible> {
     final scrollableState = Scrollable.of(context);
     assert(scrollableState != null);
 
-    final position = scrollableState.position;
+    final position = scrollableState!.position;
     double alignment;
 
     if (preciseAlignment != null) {
       alignment = preciseAlignment;
       // Only if the precise alignment exactly matches the current position no scrolling is necessary.
       if (position.pixels ==
-          viewport.getOffsetToReveal(renderObject, preciseAlignment).offset)
+          viewport!.getOffsetToReveal(renderObject!, preciseAlignment).offset)
         return;
     } else if (position.pixels >
-        viewport.getOffsetToReveal(renderObject, 0).offset) {
+        viewport!.getOffsetToReveal(renderObject!, 0).offset) {
       // Move down to the top of the viewport
       alignment = 0;
     } else if (position.pixels <

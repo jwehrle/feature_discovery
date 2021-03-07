@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/animation.dart';
 
 import 'package:feature_discovery/src/widgets.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
 enum BackgroundContentLayout {
@@ -40,20 +39,15 @@ class BackgroundContentLayoutDelegate extends MultiChildLayoutDelegate {
   final double transitionProgress;
 
   BackgroundContentLayoutDelegate({
-    @required this.overflowMode,
-    @required this.contentPosition,
-    @required this.backgroundCenter,
-    @required this.backgroundRadius,
-    @required this.anchor,
-    @required this.contentOffsetMultiplier,
-    @required this.state,
-    @required this.transitionProgress,
-  })  : assert(overflowMode != null),
-        assert(contentPosition != null),
-        assert(backgroundCenter != null),
-        assert(backgroundRadius != null),
-        assert(state != null),
-        assert(anchor != null);
+    required this.overflowMode,
+    required this.contentPosition,
+    required this.backgroundCenter,
+    required this.backgroundRadius,
+    required this.anchor,
+    required this.contentOffsetMultiplier,
+    required this.state,
+    required this.transitionProgress,
+  });
 
   @override
   void performLayout(Size size) {
